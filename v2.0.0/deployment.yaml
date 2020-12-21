@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: lab2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app
+  template:
+    metadata:
+      labels:
+        name: app
+    spec:
+      containers:
+        - name: app
+          image: labv2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: lab2
+spec:
+  ports:
+    - nodePort: 32001
+      port: 80
+      targetPort: 80
+  selector:
+    name: app
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app
+  namespace: lab2
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /v2
+            backend:
+              service:
+                name: app
+                port:
+                  number: 80

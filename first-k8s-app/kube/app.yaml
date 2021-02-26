@@ -41,6 +41,7 @@ spec:
     - http:
         paths:
           - path: /second
+            pathType: Prefix
             backend:
               service:
                 name: app

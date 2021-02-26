@@ -51,6 +51,7 @@ spec:
     - http:
         paths:
           - path: /v2
+            pathType: Prefix
             backend:
               service:
                 name: app
